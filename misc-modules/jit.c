@@ -108,6 +108,7 @@ int jit_currentime_show(struct seq_file *m, void *v)
 {
 	struct timespec64 tv1;
 	struct timespec tv2;
+	struct timespec64 ts64;
 	unsigned long j1;
 	u64 j2;
 
@@ -115,7 +116,8 @@ int jit_currentime_show(struct seq_file *m, void *v)
 	j1 = jiffies;
 	j2 = get_jiffies_64();
 	ktime_get_real_ts64(&tv1);
-	tv2 = current_kernel_time();
+	ktime_get_coarse_ts64(&ts64);
+	tv2 = timespec64_to_timespec(ts64);
 
 	/* print */
 	seq_printf(m, "0x%08lx 0x%016Lx %10i.%06i\n"
