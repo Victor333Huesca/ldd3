@@ -106,7 +106,7 @@ static const struct file_operations jit_fn_fops = {
  */
 int jit_currentime_show(struct seq_file *m, void *v)
 {
-	struct timeval tv1;
+	struct timespec64 tv1;
 	struct timespec tv2;
 	unsigned long j1;
 	u64 j2;
@@ -114,14 +114,14 @@ int jit_currentime_show(struct seq_file *m, void *v)
 	/* get them four */
 	j1 = jiffies;
 	j2 = get_jiffies_64();
-	do_gettimeofday(&tv1);
+	ktime_get_real_ts64(&tv1);
 	tv2 = current_kernel_time();
 
 	/* print */
 	seq_printf(m, "0x%08lx 0x%016Lx %10i.%06i\n"
 		       "%40i.%09i\n",
 		       j1, j2,
-		       (int) tv1.tv_sec, (int) tv1.tv_usec,
+		       (int) tv1.tv_sec, (int) tv1.tv_nsec / 1000,
 		       (int) tv2.tv_sec, (int) tv2.tv_nsec);
 	return 0;
 }
